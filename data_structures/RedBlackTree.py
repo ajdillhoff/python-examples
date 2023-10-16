@@ -9,17 +9,51 @@ class Node:
         self.p = None
         self.color = None
 
+    def __str__(self):
+        return str([self.key, self.color])
+
 class RedBlackTree:
     def __init__(self):
         self.root = None
 
+    def print_inorder(self, x):
+        if x != None:
+            self.print_inorder(x.left)
+            print(x)
+            self.print_inorder(x.right)
+
+    def print_ascii_tree(self, node, prefix=""):
+        if node != None:
+            print(prefix + "└── " + str(node.key) + " " + str(node.color))
+            self.print_ascii_tree(node.left, prefix + "    ")
+            self.print_ascii_tree(node.right, prefix + "    ")
+
+    def print_tree(self):
+        """Prints an ASCII version of the tree."""
+        self.print_ascii_tree(self.root)
+
+    def print_bfs(self):
+        queue = [self.root]
+        while len(queue) > 0:
+            node = queue.pop(0)
+            print(node)
+            if node.left != None:
+                queue.append(node.left)
+            if node.right != None:
+                queue.append(node.right)
+
+    def minimum(self, x):
+        while x.left != None:
+            x = x.left
+        return x
+
     def left_rotate(self, x):
         y = x.right
         x.right = y.left
-        if y.left != self.nil:
+        if y.left != None:
             y.left.p = x
         y.p = x.p
-        if x.p == self.nil:
+        if x.p == None:
             self.root = y
         elif x == x.p.left:
             x.p.left = y
@@ -31,10 +65,10 @@ class RedBlackTree:
     def right_rotate(self, y):
         x = y.left
         y.left = x.right
-        if x.right != self.nil:
+        if x.right != None:
             x.right.p = y
         x.p = y.p
-        if y.p == self.nil:
+        if y.p == None:
             self.root = x
         elif y == y.p.left:
             y.p.left = x
@@ -44,7 +78,7 @@ class RedBlackTree:
         y.p = x
 
     def transplant(self, u, v):
-        if u.p == self.nil:
+        if u.p == None:
             self.root = v
         elif u == u.p.left:
             u.p.left = v
@@ -53,7 +87,7 @@ class RedBlackTree:
         v.p = u.p
 
     def insert_fixup(self, z):
-        while z.p.color == RED:
+        while z.p is not None and z.p.color == RED:
             if z.p == z.p.p.left:
                 y = z.p.p.right
                 if y.color == RED:
@@ -70,7 +104,7 @@ class RedBlackTree:
                     self.right_rotate(z.p.p)
             else:
                 y = z.p.p.left
-                if y.color == RED:
+                if y is not None and y.color == RED:
                     z.p.color = BLACK
                     y.color = BLACK
                     z.p.p.color = RED
@@ -84,23 +118,23 @@ class RedBlackTree:
                     self.left_rotate(z.p.p)
         self.root.color = BLACK
     def insert(self, z):
-        y = self.nil
+        y = None
         x = self.root
-        while x != self.nil:
+        while x != None:
             y = x
             if z.key < x.key:
                 x = x.left
             else:
                 x = x.right
         z.p = y
-        if y == self.nil:
+        if y == None:
             self.root = z
         elif z.key < y.key:
             y.left = z
         else:
             y.right = z
-        z.left = self.nil
-        z.right = self.nil
+        z.left = None
+        z.right = None
         z.color = RED
         self.insert_fixup(z)
 
@@ -174,3 +208,18 @@ class RedBlackTree:
                     self.right_rotate(x.p)
                     x = self.root
         x.color = BLACK
+
+    def __str__(self):
+        return self.print_inorder(self.root)
+
+
+if __name__ == "__main__":
+    tree = RedBlackTree()
+
+    for i in range(8):
+        print("Inserting", i)
+        tree.insert(Node(i))
+
+    tree.print_inorder(tree.root)
+    tree.print_bfs()
+    tree.print_tree()

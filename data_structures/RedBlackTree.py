@@ -1,3 +1,6 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
 RED = 0
 BLACK = 1
 
@@ -15,6 +18,22 @@ class Node:
 class RedBlackTree:
     def __init__(self):
         self.root = None
+
+    def create_treeviz(self):
+        G = nx.DiGraph()
+        queue = [self.root]
+        node_colors = ["black"]
+        while len(queue) > 0:
+            node = queue.pop(0)
+            if node.left != None:
+                queue.append(node.left)
+                G.add_edge(node.key, node.left.key)
+                node_colors.append("red" if node.left.color == RED else "black")
+            if node.right != None:
+                queue.append(node.right)
+                G.add_edge(node.key, node.right.key)
+                node_colors.append("red" if node.right.color == RED else "black")
+        return G, node_colors
 
     def print_inorder(self, x):
         if x != None:
@@ -117,6 +136,7 @@ class RedBlackTree:
                     z.p.p.color = RED
                     self.left_rotate(z.p.p)
         self.root.color = BLACK
+
     def insert(self, z):
         y = None
         x = self.root
@@ -216,10 +236,23 @@ class RedBlackTree:
 if __name__ == "__main__":
     tree = RedBlackTree()
 
-    for i in range(8):
-        print("Inserting", i)
+    for i in range(20):
         tree.insert(Node(i))
 
-    tree.print_inorder(tree.root)
-    tree.print_bfs()
-    tree.print_tree()
+    G, node_colors = tree.create_treeviz()
+
+    # Visualize as a tree
+    pos = nx.nx_agraph.graphviz_layout(G, prog="dot")
+
+    # Set font color to white
+    options = {
+        "font_color": "white",
+        "font_size": 18,
+        "node_size": 1000,
+        "edgecolors": "black",
+        "linewidths": 3,
+        "width": 3,
+    }
+
+    nx.draw_networkx(G, pos, with_labels=True, arrows=True, node_color=node_colors, **options)
+    plt.show()

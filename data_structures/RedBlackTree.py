@@ -5,8 +5,9 @@ RED = 0
 BLACK = 1
 
 class Node:
-    def __init__(self, key):
+    def __init__(self, key, value=None):
         self.key = key
+        self.value = value
         self.left = None
         self.right = None
         self.p = None
@@ -46,6 +47,15 @@ class RedBlackTree:
             print(prefix + "└── " + str(node.key) + " " + str(node.color))
             self.print_ascii_tree(node.left, prefix + "    ")
             self.print_ascii_tree(node.right, prefix + "    ")
+
+    def repr_ascii_tree(self, node, prefix=""):
+        s = ""
+        if node != None:
+            s = prefix + "└── " + str(node.key) + " " + str(node.color)
+            s += self.repr_ascii_tree(node.left, prefix + "    ")
+            s += self.repr_ascii_tree(node.right, prefix + "    ")
+        
+        return s
 
     def print_tree(self):
         """Prints an ASCII version of the tree."""
@@ -230,7 +240,10 @@ class RedBlackTree:
         x.color = BLACK
 
     def __str__(self):
-        return self.print_inorder(self.root)
+        return self.repr_ascii_tree(self.root)
+    
+    def __repr__(self):
+        return self.repr_ascii_tree(self.root)
 
 
 if __name__ == "__main__":

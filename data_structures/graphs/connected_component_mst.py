@@ -30,21 +30,23 @@ options = {
     "linewidths": 5,
     "width": 5,
 }
-nx.draw_networkx(G, pos, **options)
-# nx.draw_networkx(G, **options)
+import matplotlib.pyplot as plt
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 9))
+
+nx.draw_networkx(G, pos, **options, ax=ax1)
 
 # Set margins for the axes so that nodes aren't clipped
-ax = plt.gca()
-ax.margins(0.20)
-plt.axis("off")
-plt.show()
+ax1.margins(0.20)
+ax1.axis("off")
 
-G_mst = nx.minimum_spanning_tree(G)
+nx.draw_networkx(G, pos, **options, ax=ax2)
 
-nx.draw_networkx(G_mst, pos, **options)
+# Draw a new edge (3, 4) in blue
+nx.draw_networkx_edges(G, pos, edgelist=[(3, 4)], edge_color="red", width=5, ax=ax2)
 
 # Set margins for the axes so that nodes aren't clipped
-ax = plt.gca()
-ax.margins(0.20)
-plt.axis("off")
+ax2.margins(0.20)
+ax2.axis("off")
+
 plt.show()

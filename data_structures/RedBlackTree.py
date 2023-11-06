@@ -192,6 +192,8 @@ class RedBlackTree:
             y.left = z.left
             y.left.p = y
             y.color = z.color
+        if y_original_color == BLACK:
+            self.delete_fixup(x)
 
     def delete_fixup(self, x):
         while x != self.root and x.color == BLACK:

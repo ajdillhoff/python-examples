@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import numpy as np
 
 RED = 0
 BLACK = 1
@@ -115,11 +116,19 @@ class RedBlackTree:
             u.p.right = v
         v.p = u.p
 
+    def search(self, x, k):
+        if x == None or k == x.key:
+            return x
+        if k < x.key:
+            return self.search(x.left, k)
+        else:
+            return self.search(x.right, k)
+
     def insert_fixup(self, z):
         while z.p is not None and z.p.color == RED:
             if z.p == z.p.p.left:
                 y = z.p.p.right
-                if y.color == RED:
+                if y is not None and y.color == RED:
                     z.p.color = BLACK
                     y.color = BLACK
                     z.p.p.color = RED
@@ -192,6 +201,8 @@ class RedBlackTree:
             y.left = z.left
             y.left.p = y
             y.color = z.color
+        if y_original_color == BLACK:
+            self.delete_fixup(x)
 
     def delete_fixup(self, x):
         while x != self.root and x.color == BLACK:
@@ -249,8 +260,14 @@ class RedBlackTree:
 if __name__ == "__main__":
     tree = RedBlackTree()
 
-    for i in range(20):
+    rng = np.random.default_rng(0)
+    values = rng.choice(20, size=15, replace=False)
+
+    for i in values:
         tree.insert(Node(i))
+
+    # n = tree.search(tree.root, 15)
+    # tree.delete(n)
 
     G, node_colors = tree.create_treeviz()
 

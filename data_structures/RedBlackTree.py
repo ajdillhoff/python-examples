@@ -114,7 +114,9 @@ class RedBlackTree:
             u.p.left = v
         else:
             u.p.right = v
-        v.p = u.p
+
+        if v != None:
+            v.p = u.p
 
     def search(self, x, k):
         if x == None or k == x.key:
@@ -266,8 +268,10 @@ if __name__ == "__main__":
     for i in values:
         tree.insert(Node(i))
 
-    # n = tree.search(tree.root, 15)
-    # tree.delete(n)
+    n = tree.search(tree.root, 15)
+    tree.delete(n)
+
+    tree.insert(Node(21))
 
     G, node_colors = tree.create_treeviz()
 
